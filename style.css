@@ -1,0 +1,36 @@
+
+@font-face {
+    font-family: myFont;
+    src: url("fonts/MarioWorldPixelColor-3zBwX.ttf");
+}
+@font-face {
+    font-family: myOtherFont;
+    src: url("fonts/Planes_ValMore.ttf");
+}
+@font-face {
+    font-family: myOtherOtherFont;
+    src: url("fonts/videotype.otf");
+}
+:root{
+    --hue: 200;
+}
+
+*{
+    font-family: myFont;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+div#gameWrapper{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+body{
+    background-color: rgba(21, 1, 90, 255);
+}

@@ -1,0 +1,4 @@
+next:
+1. game complete scene done
+2. pause watch when a game is complete
+3. tutorial/instructions
