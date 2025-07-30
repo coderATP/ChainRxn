@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+    <title>ChainRxn</title>
+    <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/Menu.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/Options.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/TableSelection.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/Play.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/LevelComplete.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/Pause.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/Confirm.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/Credits.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="styles/Tutorial.css" type="text/css" media="all" />
+
+</head>
+
+<body>
+    
+    <div id="gameWrapper">
+        <section id="playScreen">
+        </section>
+            <div id="playScreenTop">
+                <div id="marketSection"> </div>
+                <div id="uiSection">
+                    <div id="table">
+                    </div>
+                    <div id="others">
+                        <div id="time">
+                            <img id="timeIcon" src="images/time.png" alt="time" />
+                            <p id = "timeText">00:00</p> 
+                        </div>
+                        <div id="pause">
+                            <img id="pauseIcon" src="images/pause.png" alt="pause" />
+                            <p id = "pauseText">Pause</p> 
+                        </div>
+                        <div id="instructions">
+                            <img id="instructionsIcon" src="images/instructions.png" alt="instructions" />
+                            <p id = "instructionsText">About</p> 
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+            <div id="playScreenBottom">
+                <div id="uiSection">
+                    <div id="screenshot">
+                        <a id = "canvasRef" href="#" download="image/png">⏬</a>
+                    </div>
+                </div>
+                <div id="commentarySection">
+                    <div id="message">
+                        
+                    </div>
+                </div>
+            </div> 
+        <section id="menuScreen">
+            <div id="button">
+                <button id="menu_playBtn">PLAY</button>
+                <button id="menu_continueBtn">CONTINUE</button>
+                <button id="menu_optionsBtn">OPTION</button>   
+                <button id="menu_leaderboardBtn">LEADERBOARD</button>
+                <button id="menu_creditsBtn">CREDITS</button>   
+                <button id="menu_exitBtn">EXIT</button>   
+            </div>
+        </section>
+        <section id="tableSelectionScreen">
+            <div id = "participantsSection">
+                <div id="label">
+                    <label for="">Select Number of Participants</label> 
+                </div>
+                <div id="participants">
+                    <div id="twoParticipants">
+                        <input type="radio" name = "participant" value = "2" checked> <i>Two</i>   
+                    </div>
+                    <div id="threeParticipants">
+                        <input type="radio" name = "participant" value = "3"> <i>Three</i>   
+                    </div>
+                    <div id="fourParticipants">
+                        <input type="radio" name = "participant" value = "4"> <i>Four</i>   
+                    </div>
+                </div>
+            </div>
+            <div id = "gameModeSection">
+                <div id="label">
+                    <label for="">Game Mode</label> 
+                </div>
+                <div id="gameModes">
+                    <div id="classicMode">
+                        <input type="radio" name = "gameMode" value = "classic" checked> <i>Classic</i>   
+                    </div>
+                    <div id="timeMode">
+                        <input type="radio" name = "gameMode" value = "time" l> <i>Race Against Time</i>   
+                    </div>
+                    <div id="scoreMode">
+                        <input type="radio" name = "gameMode" value = "score"> <i>First To 70</i>   
+                    </div>
+                </div>
+            </div> 
+            <div id = "difficultiesSection">
+                <div id="label">
+                    <label for="">Difficulty</label> 
+                </div>
+                <div id="difficulties">
+                    <div id="easy">
+                        <input type="radio" name = "difficulty" value = "easy" checked> <i>Easy</i>  
+                    </div>
+                    <div id="normal">
+                        <input type="radio" name = "difficulty" value = "normal"> <i>Normal</i>  
+                    </div>
+                    <div id="hard">
+                        <input type="radio" name = "difficulty" value = "hard"> <i>Hard</i>  
+                    </div>
+                    <div id="legend">
+                        <input type="radio" name = "difficulty" value = "legend"> <i>Legend</i>  
+                    </div>
+                    <div id="hell">
+                        <input type="radio" name = "difficulty" value = "hell"> <i>Hell</i>  
+                    </div>
+                </div>
+            </div> 
+            <div id="buttonsSection">
+                <button id = "tableSelection_submitBtn">OK</button>
+                <button id = "tableSelection_backBtn">BACK</button>  
+            </div>
+        </section>
+        <!--PAUSE SCREEN-->
+        <section id="pauseScreen">
+            <div id="resume">
+                <button id="pause_resumeBtn">X</button>
+                <button id="title">paused</button>  
+            </div>
+            <div id="others">
+                <button id="pause_optionsBtn">OPTIONS</button>
+                <button id="pause_tutorialBtn">TUTORIAL</button> 
+                <button id="pause_saveBtn">SAVE</button>
+                <button id="pause_menuBtn">MENU</button> 
+                </div>
+        </section>
+        <!-- RESTART CONFIRMATION DIALOGUE BOX -->
+        <section id="confirmScreen">
+            <div id="title">
+                <p id = "confirmText">Text goes here?</p> 
+            </div>
+            <div id="others">
+                <button id="yesBtn">✅</button>
+                <button id="noBtn">❌</button> 
+            </div>
+        </section>
+        <!--END-OF-LEVEL SCREEN-->
+        <section id="levelCompleteScreen">
+            <div id="message">
+                <h1>Level Complete!</h1>
+                <div id="summary">
+                    <p id="winner">Winner: Player</p>
+                    <p id="total_rounds">Total Rounds: 0</p>  
+                    <p id="most_winner">Most winner: Player (1 Rounds)</p> 
+                    <p id="jackpot_win">Jackpot win: Player (Round 1)</p>
+                    <p id="smallest_win">Smallest win: Player (Round 1)</p>
+                    <p id="motm">Most Outstanding Player: Player</p>
+                    <p id="weakest_link">Weakest Link: Player</p>
+                </div>
+            </div>
+            <div id="buttons">
+                <button id="levelComplete_menuBtn">Menu</button> 
+                <button id="levelComplete_newGameBtn">New Game</button>
+            </div>
+        </section>
+        <!--OPTIONS SCREEN-->
+        <section id="optionsScreen">
+            <div id="sfx_div">
+                <p id="sfx_p">SFX: </p>
+                <input type="range" name="sfx" id="options_sfx" min = 0 max = 10>
+            </div>
+            <div id="vol_div">
+                <p id="vol_p"> VOLUME: </p>
+                <input type="range" name="music" id="options_music" min = 0 max = 10> 
+            </div>
+            <div id="go-to">
+                <button id= "options_menuBtn">BACK</button>
+            </div>
+
+        </section>
+        <!--CREDITS SCREEN-->
+        <section id="creditsScreen">
+            <div id="message">
+                <h1>CREDITS</h1>
+                <p id="credits">Programming: ATANDA Tosin Peter</p>
+            </div>
+            <div id="go-to">
+                <button id= "credits_menuBtn">BACK</button>
+            </div> 
+        </section>
+        <!--TUTORIAL SCREEN-->
+        <section id="tutorialScreen">
+            <div id="message">
+                <div id="tutorial_1">
+                    <h3 id = "heading_1"> Overview</h3>
+                    <p id = "message_1"></p>
+                </div>
+                <div id="tutorial_2">
+                    <h3 id = "heading_2">Top</h3>
+                    <img id = "top" src = "images/top.png" alt = "top"/>
+                    <p id = "message_2"></p>
+                </div>
+                <div id="tutorial_3">
+                    <h3 id = "heading_3">Middle</h3>
+                    <img id = "middle" src = "images/middle.png" alt = "middle"/>
+                    <p id = "message_3"></p>
+                </div>
+                <div id="tutorial_4">
+                    <h3 id = "heading_4">Bottom</h3>
+                    <img id = "bottom" src = "images/bottom.png" alt = "bottom"/>
+                    <p id = "message_4"></p>
+                </div>
+                <div id="tutorial_5">
+                    <h3 id = "heading_5">Condition to win round</h3>
+                    <p id = "message_5"></p>
+                </div>
+                <div id="tutorial_6">
+                    <h3 id = "heading_6">When a participant has no card</h3>
+                    <p id = "message_6"></p>
+                </div>
+                <div id="tutorial_7">
+                    <h3 id = "heading_7">Scoring system</h3>
+                    <p id = "message_7"></p>
+                </div>
+                <div id="tutorial_8">
+                    <h3 id = "heading_8">Difficulty</h3>
+                    <p id = "message_8"></p>
+                </div>
+                <div id="tutorial_9">
+                    <h3 id = "heading_9">Game modes</h3>
+                    <p id = "message_9"></p>
+                </div>
+                <div id="tutorial_10">
+                    <p></p>
+                    <p></p>
+                    <h3 id = "heading_10">Final words</h3>
+                    <p id = "message_10"></p>
+                </div> 
+            </div>
+            <div id="go-to">
+                <button id= "tutorial_backBtn">BACK</button>
+            </div> 
+        </section> 
+    </div>
+    <script src="lib/phaser_v87/phaser.min.js"></script>
+    <script type = "module" src="script.js">script.js</script>
+</body>
+</html>
