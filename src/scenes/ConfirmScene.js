@@ -52,6 +52,9 @@ export class ConfirmScene extends BaseScene{
         })
         eventEmitter.once("ConfirmToQuit", ()=>{
             PreloadScene.audio.popUpSound.play();
+            this.hideAllScreens();
+            document.body.backgroundColor = "black";
+            this.config.transparent = false;
             this.game.destroy(true, true);
             window.open("", "_blank", "", true);
         })

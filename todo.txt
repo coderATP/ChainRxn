@@ -2,3 +2,37 @@ next:
 1. game complete scene done
 2. pause watch when a game is complete
 3. tutorial/instructions
+4. set rules:
+market movement to foundation starts game on player tap screen
+player starts round.
+click one of 5 cards that match that on foundation
+chain and broken chain spritesheet
+if clicked card is valid, chain animates
+...from foundation to card
+onComplete, chain shortens back to 0,
+...dragging the card along with it to foundation
+
+participant can keep dealing as long as cards are valid
+has 1 chance per turn to swap a card with market
+swap button is enabled if the chance hasn't been used
+undo move button to return market and foundation movements
+undo moves calculated per turn basis. how many (foundation + swap) moves a player made, can be undone
+redo button as well.
+end/skip turn button as well. player does not necessary have to deal in a round
+
+once player's turn ends, computer starts
+hell:
+computer is very logical:
+also doesn't have to deal or swap
+computer first swaps before dealing, or simply deals
+go through all the cards and sort by value
+array.sort((a,b)=> a.getData("value") - b.getData("value"))
+
+
+can swap/deal
+swap: tap which card to swap
+deal: tap which card to deal
+undo: undo last action
+redo: redo last action
+end/skip: button
+highlight which player's turn it is.

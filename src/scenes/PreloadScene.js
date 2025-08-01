@@ -36,7 +36,8 @@ export class PreloadScene extends BaseScene{
                 else{
                     this.text = "images";
                     this.load.image("title", "../images/title.png");
-                    this.load.image("chip", "../images/chip.png"); 
+                    this.load.image("chip", "../images/chip.png");
+                    this.load.image("gold_chain", "../images/gold_chain.png");
                     this.load.spritesheet("cards", "../images/cards.png",
                         {frameWidth: 88, frameHeight: 128});
                 }

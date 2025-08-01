@@ -17,10 +17,13 @@ export class BaseScene extends Phaser.Scene{
         this.confirmScreen = document.getElementById("confirmScreen");
         this.playScreenTopUI = document.getElementById("playScreenTop");
         this.playScreenBottomUI = document.getElementById("playScreenBottom");
+        this.playByPlayScreen = document.getElementById("playByPlayScreen");
+        
         this.levelCompleteScreen = document.getElementById("levelCompleteScreen");
         this.tutorialScreen = document.getElementById("tutorialScreen");
  
         this.screens = [
+            this.playByPlayScreen,
             this.menuScreen,
             this.optionsScreen, 
             this.creditsScreen, 

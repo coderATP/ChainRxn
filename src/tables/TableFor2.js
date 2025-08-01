@@ -10,7 +10,7 @@ export class TableFor2 extends Table{
     create(){
         for(let i = 0; i < 5; ++i){
             this.playerPile.create(
-                (this.containerRect.left + this.radius) + i * this.cardWidth,
+                30+(this.containerRect.left + this.radius) + i * this.cardWidth,
                 this.containerRect.bottom - this.cardHeight,
                 this.cardWidth,
                 this.cardHeight,
@@ -30,6 +30,7 @@ export class TableFor2 extends Table{
                 i+1
             );
         }
+        
         this.enemy1Pile.generateName().setNameParams(
             this.enemy1Pile.rects[0].x + this.enemy1Pile.rects[0].width*5/2 - this.enemy1Pile.name.width/2,
             this.enemy1Pile.rects[0].y - this.enemy1Pile.name.height,

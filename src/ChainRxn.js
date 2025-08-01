@@ -24,6 +24,7 @@ export class ChainRxn{
         this.config = scene.config;
         this.opponentPiles = [];
         this.deck = [];
+        this.table = undefined;
     }
     createDeck(){
         for(let i = 0; i < ChainRxn.CARD_SUITS.length; ++i ){
@@ -33,12 +34,12 @@ export class ChainRxn{
                const card = this.scene.createCard("null", 0, 0)
                    .setOrigin(0)
                    .setFrame(52)
-                   .setDepth(0)
                    .setData({
                        frame: startFrame + j,
                        value: j+1,
                        suit: ChainRxn.CARD_SUITS[i],
-                       colour: Object.values(ChainRxn.CARD_COLOURS)[i]
+                       colour: Object.values(ChainRxn.CARD_COLOURS)[i],
+                       index: "unknown"
                    })
                
                this.deck.push(card);

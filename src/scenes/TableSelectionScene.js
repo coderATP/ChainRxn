@@ -9,6 +9,12 @@ export class TableSelectionScene extends BaseScene{
     }
     
     showInterface(){
+        //all playScreen buttons are set to interactive, signals game started
+        this.ui.gameplayButtons.forEach(btn=>{
+            btn.disabled = false;
+            btn.style.backgroundColor = "#102030";
+        }); 
+            
         this.scene.stop("PlayScene");
         eventEmitter.destroy("MenuToTableSelection"); 
         this.hideAllScreens();

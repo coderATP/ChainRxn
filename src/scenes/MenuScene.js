@@ -68,8 +68,6 @@ export class MenuScene extends BaseScene{
         eventEmitter.once("MenuToExit", ()=>{
             PlayScene.ui.confirmText.innerText = "Quit Game?";
             this.scene.start("ConfirmScene");
-           // window.open("", "_blank")
-          //  this.game.destroy(true, true);
         })   
         this.tweens.add({
             targets: this.ui.menu_playBtn,

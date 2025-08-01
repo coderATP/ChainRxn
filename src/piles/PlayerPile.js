@@ -16,12 +16,16 @@ export class PlayerPile{
         this.height = h;
         this.containerIndex = containerIndex;
        //pile rectangles
-       this.rects.push(this.scene.createPileRect(x,y,w,h));
-       //drop zone
-       this.zones.push(this.scene.createDropZone("playerZone", x,y,w,h));
+       this.rect = this.scene.createPileRect(x,y,w,h)
+       this.rects.push(this.rect);
        //container
-       this.containers.push(this.scene.add.container(x,y));
-       this.container = this.containers[0]
+       this.zone = this.scene.createDropZone(this.id + "Zone", x,y,w,h)
+       this.zone.setData({index: containerIndex-1});
+       this.zones.push(this.zone)
+       this.container = this.scene.add.container(x, y).setSize(w,h)//.setInteractive();
+       this.container.setData({index: containerIndex-1});
+ 
+       this.containers.push(this.container);
 
        return this; 
     }

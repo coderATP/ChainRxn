@@ -3,6 +3,11 @@ import { BaseScene } from "./BaseScene.js";
 import { CommandHandler } from "../CommandHandler.js";
 //movements
 import { PlayerMovement } from "../movements/PlayerMovement.js";
+import { MarketToFoundationMovement } from "../movements/MarketToFoundationMovement.js";
+import { MarketToPlayerMovement } from "../movements/MarketToPlayerMovement.js";
+import { PlayerToMarketMovement } from "../movements/PlayerToMarketMovement.js";
+import { PlayerToFoundationMovement } from "../movements/PlayerToFoundationMovement.js";
+
 import { ChainRxn } from "../ChainRxn.js";
 import { eventEmitter } from "../events/EventEmitter.js";
 import { Time } from "../events/Time.js";
@@ -15,6 +20,8 @@ export class PlayScene extends BaseScene{
         this.config = config;
         this.commandHandler = new CommandHandler(this);
         this.chainRxn = new ChainRxn(this);
+        this.textDisplayTimer = 0;
+        this.textDisplayInterval = 2300;
     }
     
     showInterface(){
@@ -41,10 +48,10 @@ export class PlayScene extends BaseScene{
         return rect;
     }
     createDropZone(zoneType, x, y, w, h){
-        const zone = this.add.zone(x, y, w, h).setRectangleDropZone(w+30, h+30).setDepth(-2)
+        const zone = this.add.zone(x, y, w, h).setRectangleDropZone(w, h).setDepth(10)
         .setName(zoneType).setOrigin(0);
         if(this.config.debug){
-            this.add.rectangle(x, y, w, h, 0x09144ff, 0.0).setDepth(200).setOrigin(0);
+            this.add.rectangle(x, y, w, h, 0x09144ff, 0.0).setDepth(0).setOrigin(0);
         }
         return zone;
     }
@@ -52,7 +59,7 @@ export class PlayScene extends BaseScene{
     handleDragEvent(){
         this.input.on("drag", (pointer, gameobject, dragX, dragY)=>{
             //change position for a single card
-            gameobject.setPosition(dragX, dragY);
+          //  gameobject.setPosition(dragX, dragY);
             //change position for a stack of cards from tableau 
 
         })
@@ -65,7 +72,6 @@ export class PlayScene extends BaseScene{
     
     handleDropEvent(){
         this.input.on("drop", (pointer, gameobject, dropZone)=>{
-           gameobject.setDepth(0).setAlpha(1);
             switch(dropZone.name){
                 //FOUNDATION DROP ZONE
                 case "playerZone":{
@@ -88,15 +94,22 @@ export class PlayScene extends BaseScene{
     }
     
     handleClickEvent(){
-        //player card
-        this.chainRxn.table.playerPile.container.list.forEach((card)=>{
-            card.on("pointerdown", ()=>{
-              /*  if(this.commandHandler.playing) return;
-                const command = new PlayerMovement(this);
-                this.commandHandler.execute(command);
-                */
-            }) 
-        })
+        //all playScreen buttons are hidden
+        this.ui.gameplayButtons.forEach(btn=>{ btn.hidden = true; }); 
+        //flag to click screen once
+        //..and send a market card to foundation
+        let gameStarted = null;
+        this.input.on("pointerdown", ()=>{
+            if(gameStarted) return;
+            //MARKET MOVEMENT TO DISCARD/FOUNDATION
+            if(gameStarted) return;
+            const command = new MarketToFoundationMovement(this);
+            this.commandHandler.execute(command);
+            gameStarted = true;
+            //all playScreen buttons are revealed, signals game started
+            this.ui.gameplayButtons.forEach(btn=>{ btn.hidden = false; });  
+        });
+
         //PlayScene icons
         this.ui.playSceneIcons.forEach(icon=>{
             icon.addEventListener('click', (e)=>{
@@ -111,6 +124,12 @@ export class PlayScene extends BaseScene{
         this.processEvents();
         return this;
     }
+    
+    onGameplayButtonPressed(btn){
+        btn.disabled = true;
+        btn.style.backgroundColor = "gray";
+    }
+    
     processEvents(){
         const { GameCompleteScene, PauseScene, TutorialScene } = this.game.scene.keys;
         PauseScene.gamePaused = false;
@@ -154,25 +173,124 @@ export class PlayScene extends BaseScene{
         tempDeck = [];
         return array;
     }
-    create(){
-        const { PreloadScene } = this.game.scene.keys;
-        this.preloadScene = PreloadScene;
-        this.showInterface();
-       
-        //ui
-        this.ui = new UIEventsHandler(this);
-        //watch
-        this.watch = new Time(this);
-        this.watch.setUpWatch(this.ui.timeText).startWatch(this.ui.timeText);
-        //graphics creation
-        this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
-        //game
-        this.chainRxn.newGame();
-        
-        //events
-       this.handleDragEvent().handleDropEvent().handleClickEvent();
+ 
+    adjustInGameTextDisplayRate(delta){
+        if(this.textDisplayTimer < this.textDisplayInterval){
+            this.textDisplayTimer+= delta;
+            this.showOne(this.playByPlayScreen, "grid", 0);
+        }
+        else{
+            this.hideOne(this.playByPlayScreen);
+            this.textDisplayTimer = this.textDisplayInterval;
+        }
     }
     
+    listenToGameplayEvents(){
+        //last action
+        this.lastAction = "";
+        //flags
+        let swapping, dealing;
+        this.ui.gameplayButtons.forEach(btn=>{
+            
+            btn.addEventListener("click", (e)=>{
+                this.preloadScene.audio.play(this.preloadScene.audio.popUpSound);
+                let zoneIndex;
+                switch(e.target.id){
+                    //SWAP
+                    case "swapBtn" : {
+                        this.lastAction = "swap";
+                        this.swapping = true; //flag to only swap once
+                        this.textDisplayTimer = 0;
+                        this.ui.gameplayText.innerText = ("tap which card to swap");
+                        
+                        //movement
+                        this.input.on("pointerdown", (pointer, gameobject)=>{
+                            if(!gameobject[0]) return;
+                            zoneIndex = gameobject[0].getData("index");
+                            
+                            switch(zoneIndex){
+                                case 0: case 1: case 2: case 3: case 4:{
+                                    if(!this.swapping) return;
+                                    if(this.lastAction !== "swap") return;
+                                    //read zone index
+                                    const containers = this.chainRxn.table.playerPile.containers;
+                                    const container = containers[zoneIndex];
+
+                                    //gray out button, indicates swapping has been done
+                                    this.onGameplayButtonPressed(e.target);
+                                    //exchange card with market
+                                    const command = new MarketToPlayerMovement(this, container);
+                                    this.commandHandler.execute(command);
+                                    const otherCommand = new PlayerToMarketMovement(this, container);
+                                    this.commandHandler.execute(otherCommand); 
+                                    this.swapping = false; //can no longer swap  
+                                break;
+                                }
+                            }
+
+                        })
+                        
+                    break;
+                    }
+                    //DEAL
+                    case "dealBtn" : {
+                       this.lastAction = "deal";
+                        this.dealing = true; // flag to only deal once
+                        this.textDisplayTimer = 0;
+                        this.ui.gameplayText.innerText = ("tap which card to deal");
+                        
+                        //movement
+                        this.input.on("pointerdown", (pointer, gameobject)=>{
+                            if(!gameobject[0]) return;
+                            zoneIndex = gameobject[0].getData("index");
+                            
+                            switch(zoneIndex){
+                                case 0: case 1: case 2: case 3: case 4:{
+                                    if(!this.dealing) return;
+                                    if(this.lastAction !== "deal") return;
+                                    const containers = this.chainRxn.table.playerPile.containers;
+                                    const container = containers[zoneIndex];
+
+                                    //reveal chain and rotate towards dealer
+                                    this.chainRxn.table.chain.rotateTowards(container);
+                                    //gray out button, indicates dealing has been done
+                                    this.onGameplayButtonPressed(e.target);
+                                    //execute deal to foundation
+                                    const command = new PlayerToFoundationMovement(this, container);
+                                    this.commandHandler.execute(command); 
+                                    this.dealing = false; //can no longer deal 
+                                break;
+                                }
+                            }
+                        });
+                        
+                    break;
+                    }
+                    //UNDO
+                    case "undoBtn": {
+                        this.lastAction = "undo";
+                        this.textDisplayTimer = 0;
+                        this.ui.gameplayText.innerText = ("undoing last action");
+                    break;
+                    }
+                    //REDO
+                    case "redoBtn": {
+                        this.lastAction = "redo";
+                        this.textDisplayTimer = 0;
+                        this.ui.gameplayText.innerText = ("redoing last action");
+                    break;
+                    }
+                    //END
+                    case "endBtn": {
+                        this.lastAction = "end";
+                        this.textDisplayTimer = 0;
+                        this.ui.gameplayText.innerText = ("turn ended");
+                    break;
+                    } 
+                }
+            })
+        })
+    }
     swapPlayerTopCard(){
         const foundationCardsArray = this.elewenjewe.table.foundationPile.container.list;
         const playerCardsArray = this.elewenjewe.table.playerPile.container.list;
@@ -199,7 +317,33 @@ export class PlayScene extends BaseScene{
         return cardToSwap;
     }
     
+    sortPile(array){
+        array.sort((a, b)=> a.getData("value") - b.getData("value"))
+    }
+    
+    
+    create(){
+        const { PreloadScene } = this.game.scene.keys;
+        this.preloadScene = PreloadScene;
+        this.listenToGameplayEvents();
+        this.showInterface();
+       
+        //ui
+        this.ui = new UIEventsHandler(this);
+        //watch
+        this.watch = new Time(this);
+        this.watch.setUpWatch(this.ui.timeText).startWatch(this.ui.timeText);
+        //graphics creation
+        this.graphics = this.add.graphics({lineStyle:  {width: 1, color: "0xffffff"} })
+        //game
+        this.chainRxn.newGame();
+        
+        //events
+       this.handleDragEvent().handleDropEvent().handleClickEvent();
+       
+    }
+    
     update(time, delta){
-
+        this.adjustInGameTextDisplayRate(delta);
     }
 }

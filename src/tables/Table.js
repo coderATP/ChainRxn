@@ -2,6 +2,7 @@ import { PlayerPile } from "../piles/PlayerPile.js";
 import { FoundationPile } from "../piles/FoundationPile.js";
 import { MarketPile } from "../piles/MarketPile.js";
 import { WinnerIndicator } from "../entities/WinnerIndicator.js";
+import { Chain } from "../entities/Chain.js";
 import { HUD } from "../hud/Hud.js";
 
 
@@ -41,12 +42,15 @@ export class Table{
             this.containerRect.height,
             this.radius
         );
+        //TABLE ENTITIES
         //piles
         this.playerPile = new PlayerPile(this.scene, "P");
         this.foundationPile = new FoundationPile(scene, "foundation");
         this.marketPile = new MarketPile(scene, "Market");
+        //chain
+        this.chain = new Chain(scene,0,0);
         //HUD
-        this.hud = new HUD(this.scene);
+        this.hud = new HUD(scene);
        //most recent winner indicator
        this.recentWinnerIndicator = new WinnerIndicator(this.scene, 0, 0);
     }
@@ -68,6 +72,10 @@ export class Table{
             this.cardWidth,
             this.cardHeight
         );
+        //chain 
+        this.chain.setPosition(this.foundationPile.x + this.foundationPile.width/2, this.foundationPile.y + this.foundationPile.height/2)
+       // this.chain.rotate({x: this.config.width, y: this.config.height})
+        
     }
     
     addCardToPiles(participantsArray, market){
@@ -76,10 +84,12 @@ export class Table{
  
         for(let i = participantsArray.length; i > 0; --i){
             const pile = tempDeck.splice(0, 5);
-            participantsArray[i-1].containers.forEach(container=>{
+            participantsArray[i-1].containers.forEach((container, j)=>{
                 container.add(pile.splice(0, 1));
-            })
-            
+                container.list.forEach((card)=>{
+                    card.setData("index", j);
+                })
+            });
             //set card info
             this.setParticipantsCardsData(pile);
             
@@ -96,7 +106,7 @@ export class Table{
     
     setParticipantsCardsData(pile){
         pile.forEach((card, i)=>{
-            card.setPosition(-i*0.5, -i*0.5)
+            card.setPosition(-i*0.5-this.cardWidth/2, -i*0.5-this.cardHeight/2)
             .setFrame(52)
             .setInteractive({draggable: false})
             
@@ -122,7 +132,7 @@ export class Table{
         pile.forEach((card, i)=>{
             card.setPosition(-i*0.5, -i*0.5)
             .setName("marketCard")
-            .setFrame(52)
+            .setFrame(card.getData("frame"))
             .setInteractive({draggable: false})
             
             card.setData({
