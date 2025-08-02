@@ -185,61 +185,26 @@ export class PlayScene extends BaseScene{
         }
     }
     
-    gameplay(event){
-        this.preloadScene.audio.play(this.preloadScene.audio.popUpSound);
-        let zoneIndex;
-        switch(event.target.id){
-            //SWAP
-            case "swapBtn" : {
-                this.lastAction = "swap";
-                this.swapping = true; //flag to only swap once
-                this.textDisplayTimer = 0;
-                this.ui.gameplayText.innerText = ("tap which card to swap");
-                
-                //gray out button, indicates swap button has been clicked
-                this.onGameplayButtonPressed(event.target); 
-                //movement
-                this.input.once("pointerdown", (pointer, gameobject)=>{
-                    if(!gameobject[0]) return;
-                    zoneIndex = gameobject[0].getData("index");
-                    switch(zoneIndex){
-                        case 0: case 1: case 2: case 3: case 4:{
-                            if(!this.swapping) return;
-                            if(this.lastAction !== "swap") return;
-                            //read zone index
-                            const containers = this.chainRxn.table.playerPile.containers;
-                            const container = containers[zoneIndex];
-
-                            //exchange card with market
-                            const command = new MarketToPlayerMovement(this, container);
-                            this.commandHandler.execute(command);
-                            const otherCommand = new PlayerToMarketMovement(this, container);
-                            this.commandHandler.execute(otherCommand); 
-                            this.swapping = false; //can no longer swap  
-                            break;
-                        }
-                    }
-                })
-            break;
-            }
-            //DEAL
-            case "dealBtn" : {
-                this.lastAction = "deal";
+    dealCard(event){
+        let zoneIndex; 
+this.lastAction = "deal";
                 this.dealing = true; // flag to only deal once
                 this.textDisplayTimer = 0;
                 this.ui.gameplayText.innerText = ("tap which card to deal");
                
-                //gray out button, indicates swap button has been clicked
-                this.onGameplayButtonPressed(event.target); 
                 //movement
                 this.input.once("pointerdown", (pointer, gameobject)=>{
                     if(!gameobject[0]) return;
                     zoneIndex = gameobject[0].getData("index");
-                    
+
                     switch(zoneIndex){
                         case 0: case 1: case 2: case 3: case 4:{
                             if(!this.dealing) return;
                             if(this.lastAction !== "deal") return;
+                            
+                            //gray out button, indicates swap button has been clicked
+                            this.onGameplayButtonPressed(event.target);        
+                            
                             const containers = this.chainRxn.table.playerPile.containers;
                             const container = containers[zoneIndex];
                             //reveal chain and rotate towards dealer
@@ -251,45 +216,83 @@ export class PlayScene extends BaseScene{
                         break;
                         }
                     }
-                });
-            break;
-            }
-            //UNDO
-            case "undoBtn": {
-                this.lastAction = "undo";
-                this.textDisplayTimer = 0;
-                this.ui.gameplayText.innerText = ("undoing last action");
-            break;
-            }
-            //REDO
-            case "redoBtn": {
-                this.lastAction = "redo";
-                this.textDisplayTimer = 0;
-                this.ui.gameplayText.innerText = ("redoing last action");
-            break;
-            }
-            //END
-            case "endBtn": {
-                this.lastAction = "end";
-                this.textDisplayTimer = 0;
-                this.ui.gameplayText.innerText = ("turn ended");
-                
-                this.computerExecuting = true;
-                if(!this.computerExecuting) return;
-                const command = new ComputerMovement(this);
-                this.commandHandler.execute(command);
-                this.computerExecuting = false; //stop executing
-            break;
-            } 
-        }
+                }); 
     }
+    swapCard(event){
+        let zoneIndex;
+                this.lastAction = "swap";
+                this.swapping = true; //flag to only swap once
+                this.textDisplayTimer = 0;
+                this.ui.gameplayText.innerText = ("tap which card to swap");
+                
+                //movement
+                this.input.once("pointerdown", (pointer, gameobject)=>{
+                    if(!gameobject[0]) return;
+                    zoneIndex = gameobject[0].getData("index");
+                    switch(zoneIndex){
+                        case 0: case 1: case 2: case 3: case 4:{
+                            if(!this.swapping) return;
+                            if(this.lastAction !== "swap") return;
+                            //read zone index
+                            const containers = this.chainRxn.table.playerPile.containers;
+                            const container = containers[zoneIndex];
+                            //gray out button, indicates swap button has been clicked
+                            this.onGameplayButtonPressed(event.target); 
+
+                            //exchange card with market
+                            const command = new MarketToPlayerMovement(this, container);
+                            this.commandHandler.execute(command);
+                            const otherCommand = new PlayerToMarketMovement(this, container);
+                            this.commandHandler.execute(otherCommand); 
+                            this.swapping = false; //can no longer swap  
+                            break;
+                        }
+                    }
+                }) 
+    }
+    endTurn(event){
+        this.lastAction = "end";
+        this.textDisplayTimer = 0;
+        this.ui.gameplayText.innerText = ("turn ended");
+        this.computerExecuting = true;
+        if(!this.computerExecuting) return;
+        const command = new ComputerMovement(this);
+        this.commandHandler.execute(command);
+        this.computerExecuting = false; //stop executing 
+    }
+    undoMove(event){
+        this.lastAction = "undo";
+        this.textDisplayTimer = 0;
+        this.ui.gameplayText.innerText = ("undoing last action"); 
+    }
+    redoMove(event){
+        this.lastAction = "redo";
+        this.textDisplayTimer = 0;
+        this.ui.gameplayText.innerText = ("redoing last action"); 
+    }
+    
     listenToGameplayEvents(){
         //last action
         this.lastAction = "";
         //flags
         this.swapping = false; this.dealing = false; this.computerExecuting = false;
+        this.preloadScene.audio.play(this.preloadScene.audio.popUpSound);
+        //add event listeners to each button
+        //some multiple events, others one-time
         this.ui.gameplayButtons.forEach(btn=>{
-            btn.addEventListener("click", (e)=>{this.gameplay(e)}, {once: true});
+            switch(btn.id){
+                case "swapBtn": btn.addEventListener("click", (e)=>{this.swapCard(e)}, {once: false});
+                break;
+                case "dealBtn": btn.addEventListener("click", (e)=>{this.dealCard(e)}, {once: false});
+                break;
+                case "endBtn": btn.addEventListener("click", (e)=>{this.endTurn(e)}, {once: true});
+                break;
+                case "undoBtn": btn.addEventListener("click", (e)=>{this.undoMove(e)}, {once: true});
+                break;
+                case "redoBtn": btn.addEventListener("click", (e)=>{this.redoMove(e)}, {once: true});
+                break;
+            }
+            
         })
     }
     swapPlayerTopCard(){
