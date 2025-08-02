@@ -13,7 +13,10 @@ export class ComputerMovement extends Movement{
         this.lastIndexToDeal = -1;
         this.scene = scene;
         this.tempParticipants = this.table.opponents.slice();
- 
+        this.validContainersToDealFrom = [];
+        this.validCardsToDealFrom = [];
+        this.invalidContainersToDealFrom = [];
+        this.invalidCardsToDealFrom = [];
     }
     
     determineEndOfRoundWinner(data, winnerPile){
@@ -27,6 +30,40 @@ export class ComputerMovement extends Movement{
         return {winnerPile, winner, score};
     }
     
+    resetContainers(){
+        /*while(this.validCardsToDealFrom.length) this.validCardsToDealFrom.pop();
+        while(this.validContainersToDealFrom.length) this.validContainersToDealFrom.pop();
+        while(this.invalidCardsToDealFrom.length) this.invalidCardsToDealFrom.pop();
+        while(this.invalidContainersToDealFrom.length) this.invalidContainersToDealFrom.pop();*/
+        this.validContainersToDealFrom = [];
+        this.validCardsToDealFrom = [];
+        this.invalidContainersToDealFrom = [];
+        this.invalidCardsToDealFrom = [];
+    }
+    
+    addDataToContainers(containers){
+        //determine which pile the computer will deal from (easy)
+            // pile cannot be empty
+        containers = containers.filter((container, index, array)=> container.length);
+            // check which containers contain valid card to deal to foundation
+                //top card on foundation must be 1 </> than the one to be dealt.
+        this.topFoundationCard = this.table.foundationPile.container.list[this.table.foundationPile.container.length - 1];
+       
+        this.resetContainers();
+        containers.forEach((container, index, array)=>{
+            container.list.forEach(card=>{
+                if(card.getData("value") === this.topFoundationCard.getData("value") + 1 ||
+                   card.getData("value") === this.topFoundationCard.getData("value") - 1){
+                       this.validCardsToDealFrom.push(card);
+                       this.validContainersToDealFrom.push(container);
+                }
+                else{
+                       this.invalidCardsToDealFrom.push(card);
+                       this.invalidContainersToDealFrom.push(container); 
+                }
+            })
+        });
+    }
     execute(){
         //CommandHandler is playing, don't allow user input
         this.scene.commandHandler.playing = true;
@@ -46,32 +83,8 @@ export class ComputerMovement extends Movement{
         let containers = sourcePile.containers;
         const randomContainer = containers[Math.floor(Math.random() * containers.length)];
         
-        //determine which pile the computer will deal from (easy)
-            // pile cannot be empty
-        containers = containers.filter((container, index, array)=> container.length);
-            // check which containers contain valid card to deal to foundation
-                //top card on foundation must be 1 </> than the one to be dealt.
-        const topFoundationCard = foundationPile.container.list[foundationPile.container.length - 1];
-        
-        const validContainersToDealFrom = [];
-        const validCardsToDealFrom = [];
-        const invalidContainersToDealFrom = [];
-        const invalidCardsToDealFrom = []; 
-        containers.forEach((container, index, array)=>{
-            container.list.forEach(card=>{
-                if(card.getData("value") === topFoundationCard.getData("value") + 1 ||
-                   card.getData("value") === topFoundationCard.getData("value") - 1){
-                       validCardsToDealFrom.push(card);
-                       validContainersToDealFrom.push(container);
-                }
-                else{
-                       invalidCardsToDealFrom.push(card);
-                       invalidContainersToDealFrom.push(container); 
-                }
-            })
-            
-        });
-        
+
+        this.addDataToContainers(containers);
         //determine which pile the computer will swap from (intermediate)
             //conditions to swap
             //computer will not swap from non-empty containers
@@ -95,14 +108,35 @@ export class ComputerMovement extends Movement{
                 case GAME_MODES.EASY:{
                     this.movingToFoundation = true;
                     //swap 90% of the time
-                  //  let randomNumber = Math.random();
-                  //  if(randomNumber > 0.9) return;
-                    const randomInvalidContainer = invalidContainersToDealFrom[Math.floor(Math.random()*invalidCardsToDealFrom.length)];
+                    let swapFrequency = Math.random();
+                    let dealFrequency = Math.random();
+                    let swapOrDealFirst = Math.random();
+                    //swap first
+                    if(swapOrDealFirst < 0.5){
+                    }
+                    //deal first
+                    else{
+                        
+                    }
+                   // if(swapFrequency > 0.9) return;
+                    const randomInvalidContainer = this.invalidContainersToDealFrom[Math.floor(Math.random()*this.invalidCardsToDealFrom.length)];
                     if(!this.movingToFoundation) return;
+                    //swap
                     const command = new PlayerToMarketMovement(this.scene, randomInvalidContainer);
                     this.scene.commandHandler.execute(command);
                     const otherCommand = new MarketToPlayerMovement(this.scene, randomInvalidContainer);
                     this.scene.commandHandler.execute(otherCommand);
+                    //deal afterwards
+                    setTimeout(()=>{
+                        this.addDataToContainers(containers);
+                        const randomValidContainer = this.validContainersToDealFrom[Math.floor(Math.random()*this.validCardsToDealFrom.length)];
+                        if(!randomValidContainer){
+                            alert(sourcePile.id + " has no valid card, to next participant");
+                            return;
+                        }
+                        const command = new PlayerToFoundationMovement(this.scene, randomValidContainer);
+                        this.scene.commandHandler.execute(command);
+                    }, 1100);
                     this.movingToFoundation = false;
                 break;
                 }

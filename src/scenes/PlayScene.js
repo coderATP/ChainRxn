@@ -187,7 +187,7 @@ export class PlayScene extends BaseScene{
     
     dealCard(event){
         let zoneIndex; 
-this.lastAction = "deal";
+        this.lastAction = "deal";
                 this.dealing = true; // flag to only deal once
                 this.textDisplayTimer = 0;
                 this.ui.gameplayText.innerText = ("tap which card to deal");
@@ -202,16 +202,27 @@ this.lastAction = "deal";
                             if(!this.dealing) return;
                             if(this.lastAction !== "deal") return;
                             
-                            //gray out button, indicates swap button has been clicked
-                            this.onGameplayButtonPressed(event.target);        
-                            
                             const containers = this.chainRxn.table.playerPile.containers;
                             const container = containers[zoneIndex];
-                            //reveal chain and rotate towards dealer
-                            this.chainRxn.table.chain.rotateTowards(container);
+                            const playerCard = container.list[0];
+                            const foundationCard = this.chainRxn.table.foundationPile.container.list[0];
+                           
                             //execute deal to foundation
+                            //only if cards are 1</> each other
+                            if(foundationCard.getData("value") !== playerCard.getData("value")+1 &&
+                              foundationCard.getData("value") !== playerCard.getData("value")-1 ){
+                                 // alert("P" + (zoneIndex+1)+" is not valid");
+                                  this.textDisplayTimer = 0;
+                                  this.ui.gameplayText.innerText = ("P" + (zoneIndex+1)+" is not valid"); 
+                                  return;
+                            }
+                            //reveal chain and rotate towards dealer
+                            this.chainRxn.table.chain.rotateTowards(container); 
                             const command = new PlayerToFoundationMovement(this, container);
                             this.commandHandler.execute(command); 
+                            //gray out button, indicates dealing was successful
+                            this.onGameplayButtonPressed(event.target);        
+                             
                             this.dealing = false; //can no longer deal 
                         break;
                         }
@@ -220,17 +231,16 @@ this.lastAction = "deal";
     }
     swapCard(event){
         let zoneIndex;
-                this.lastAction = "swap";
-                this.swapping = true; //flag to only swap once
-                this.textDisplayTimer = 0;
-                this.ui.gameplayText.innerText = ("tap which card to swap");
-                
-                //movement
-                this.input.once("pointerdown", (pointer, gameobject)=>{
-                    if(!gameobject[0]) return;
-                    zoneIndex = gameobject[0].getData("index");
-                    switch(zoneIndex){
-                        case 0: case 1: case 2: case 3: case 4:{
+        this.lastAction = "swap";
+        this.swapping = true; //flag to only swap once
+        this.textDisplayTimer = 0;
+        this.ui.gameplayText.innerText = ("tap which card to swap");
+        //movement
+        this.input.once("pointerdown", (pointer, gameobject)=>{
+            if(!gameobject[0]) return;
+            zoneIndex = gameobject[0].getData("index");
+            switch(zoneIndex){
+                case 0: case 1: case 2: case 3: case 4:{
                             if(!this.swapping) return;
                             if(this.lastAction !== "swap") return;
                             //read zone index
