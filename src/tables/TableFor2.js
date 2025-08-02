@@ -10,7 +10,7 @@ export class TableFor2 extends Table{
     create(){
         for(let i = 0; i < 5; ++i){
             this.playerPile.create(
-                30+(this.containerRect.left + this.radius) + i * this.cardWidth,
+                (this.containerRect.left + this.radius) + i * this.cardWidth,
                 this.containerRect.bottom - this.cardHeight,
                 this.cardWidth,
                 this.cardHeight,
@@ -36,6 +36,7 @@ export class TableFor2 extends Table{
             this.enemy1Pile.rects[0].y - this.enemy1Pile.name.height,
         );
         this.participants.unshift(this.enemy1Pile, this.playerPile);
+        this.opponents.push(this.enemy1Pile);
         //create scoreboard
         this.scoreboard = this.hud.createScoreboard(this.participants);
         super.create();

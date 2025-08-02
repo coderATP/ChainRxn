@@ -1,20 +1,18 @@
 import { Movement } from "./Movement.js";
 import { CommandHandler } from "../CommandHandler.js";
-import { FoundationToPlayerMovement } from "./FoundationToPlayerMovement.js";
-import { MarketMovement } from "./MarketMovement.js";
-import { WinnerMovement } from "./WinnerMovement.js";
+import { PlayerToFoundationMovement } from "./PlayerToFoundationMovement.js";
+import { PlayerToMarketMovement } from "./PlayerToMarketMovement.js";
+import { MarketToPlayerMovement } from "./MarketToPlayerMovement.js";
 
 
-export class PlayerMovement extends Movement{
+export class ComputerMovement extends Movement{
     constructor(scene){
         super(scene);
-        this.id = "playerMovement";
-        this.targetX = 0;
-        this.targetY = -200;
-        this.table = this.scene.elewenjewe.table;
-        this.lastIndexToDeal = this.table.participants.length - 2;
+        this.id = "computerMovement";
+        this.table = this.scene.chainRxn.table;
+        this.lastIndexToDeal = -1;
         this.scene = scene;
-        this.tempParticipants = this.table.participants.slice();
+        this.tempParticipants = this.table.opponents.slice();
  
     }
     
@@ -36,87 +34,80 @@ export class PlayerMovement extends Movement{
         this.lastIndexToDeal++; //player starts
         
         const marketPile = this.table.marketPile;
-        const targetPile = this.table.foundationPile;
+        const foundationPile = this.table.foundationPile;
         let sourcePile = this.tempParticipants[this.lastIndexToDeal];
         
         //REVEAL CARD OF PARTICIPANT ONLY WHEN IT'S TIME TO DEAL
         const topCard = sourcePile.container.list[sourcePile.container.length-1];
         if(topCard) topCard.setFrame(topCard.getData("frame"));
         
-        if(sourcePile) this.card = sourcePile.container.list[sourcePile.container.length - 1];
+        //take random card from non-empty pile and deal
+        let randomCard = null;
+        let containers = sourcePile.containers;
+        const randomContainer = containers[Math.floor(Math.random() * containers.length)];
         
-        targetPile.container.setDepth(0);
-        if(sourcePile) sourcePile.container.setDepth(1);
-
-        const tween = this.scene.tweens.add({
-            targets: this.card,
-            x: targetPile.x - sourcePile.x,
-            y: targetPile.y - sourcePile.y,
-            duration: 1000,
-            ease: "Quadratic",
-            onComplete: ()=>{
-                //create new card
-                const card = this.scene.createCard("foundationCard")
-                        .setInteractive({draggable: false})
-                        .setFrame(this.card.getData("frame"));
-                card.setData({
-                        x: card.x,
-                        y: card.y,
-                        id: targetPile.id,
-                        sourceID: sourcePile.id,
-                        frame: this.card.getData("frame"),
-                        suit: this.card.getData("suit"),
-                        colour: this.card.getData("colour"),
-                        value: this.card.getData("value")
-                });
-                //add new card to target pile
-                targetPile.container.add(card);
-                //set position of new card
-                targetPile.container.list.forEach((card, i)=>{
-                        card.setPosition(0, -i*2)
-                        card.setData({x: card.x, y: card.y})
-                })
-                sourcePile.container.list.pop();
-                this.card.destroy();
-                
-                //NEXT MOVE
-                //CLASSIC MODE
-                //return foundation cards to market when:->
-                    //1. market pile is empty
-                    //2. round has finished and nobody wins
-                    //3. most recent winner played 3 times but couldn't win
-                //TIME MODE
-                //SCORE MODE
-                
-                //OPTION A: SOMEONE WINS
-                const cardBelow = targetPile.container.list[targetPile.container.length-1];
-                const cardTop = targetPile.container.list[targetPile.container.length-2];
-                if(targetPile.container.length > 1 &&
-                        cardTop.getData("suit") === cardBelow.getData("suit") 
-                ){
-                    //show winner sign on recent winner
-                    this.table.recentWinnerIndicator.moveToCurrentWinner(sourcePile);
-                    //update scoreboard
-                    this.recentWinner = this.determineEndOfRoundWinner(this.scene.elewenjewe.data, sourcePile);
-                    //move foundation cards to most recent winner's pile
-                    const command = new FoundationToPlayerMovement(this.scene, sourcePile);
-                    this.scene.commandHandler.execute(command);
-                    //rearrange participants so that 1st player = most recent winner
-                    const arr = this.tempParticipants.splice(0, this.lastIndexToDeal);
-                    this.tempParticipants.push(...arr); 
-                    //start a new round
-                    setTimeout(()=>{
-                        this.lastIndexToDeal = -1; 
-                        this.execute();
-                    }, 1200);
+        //determine which pile the computer will deal from (easy)
+            // pile cannot be empty
+        containers = containers.filter((container, index, array)=> container.length);
+            // check which containers contain valid card to deal to foundation
+                //top card on foundation must be 1 </> than the one to be dealt.
+        const topFoundationCard = foundationPile.container.list[foundationPile.container.length - 1];
+        
+        const validContainersToDealFrom = [];
+        const validCardsToDealFrom = [];
+        const invalidContainersToDealFrom = [];
+        const invalidCardsToDealFrom = []; 
+        containers.forEach((container, index, array)=>{
+            container.list.forEach(card=>{
+                if(card.getData("value") === topFoundationCard.getData("value") + 1 ||
+                   card.getData("value") === topFoundationCard.getData("value") - 1){
+                       validCardsToDealFrom.push(card);
+                       validContainersToDealFrom.push(container);
                 }
-                //OPTION B: NOBODY WINS
                 else{
-                    //just continue dealing
-                    this.continueDealing();
+                       invalidCardsToDealFrom.push(card);
+                       invalidContainersToDealFrom.push(container); 
+                }
+            })
+            
+        });
+        
+        //determine which pile the computer will swap from (intermediate)
+            //conditions to swap
+            //computer will not swap from non-empty containers
+            //computer won't (often) swap from dealable containers
+            
+            //GAME MODES LOGIC - EASY TO HARD MODES FOR SWAPPING
+            //EASY: SWAP ANY UNDEALABLE CARDS, ALSO SWAP DEALABLE ONES 30% FREQUENTLY
+            //MEDIUM: SWAP ANY UNDEALABLE CARDS, BUT DON'T SWAP DEALABLE ONES
+            //HARD: SWAP ANY UNDEALABLE CARDS, ONLY IF VALUE 2<> TOP FOUNDATION CARD, DON'T SWAP DEALABLE ONES AT ALL
+            const GAME_MODES = Object.freeze({
+                EASY: 0,
+                MEDIUM: 1,
+                HARD: 2
+            });
+            //before entering game mode, set flags to prevent multiple calling
+            this.movingToFoundation = false;
+            this.movingToMarket = false;
+            
+            let gameMode = GAME_MODES.EASY
+            switch(gameMode){
+                case GAME_MODES.EASY:{
+                    this.movingToFoundation = true;
+                    //swap 90% of the time
+                  //  let randomNumber = Math.random();
+                  //  if(randomNumber > 0.9) return;
+                    const randomInvalidContainer = invalidContainersToDealFrom[Math.floor(Math.random()*invalidCardsToDealFrom.length)];
+                    if(!this.movingToFoundation) return;
+                    const command = new PlayerToMarketMovement(this.scene, randomInvalidContainer);
+                    this.scene.commandHandler.execute(command);
+                    const otherCommand = new MarketToPlayerMovement(this.scene, randomInvalidContainer);
+                    this.scene.commandHandler.execute(otherCommand);
+                    this.movingToFoundation = false;
+                break;
                 }
             }
-        }) 
+ 
     }
     
     resetDealerIndexIfNobodyWins(){

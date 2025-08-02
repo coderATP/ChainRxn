@@ -45,6 +45,7 @@ export class TableFor3 extends Table{
             this.enemy2Pile.rects[0].y - this.enemy2Pile.name.height,
         );
         this.participants.unshift(this.enemy1Pile, this.enemy2Pile, this.playerPile);
+        this.opponents.push(this.enemy1Pile, this.enemy2Pile);
         //create scoreboard
         this.scoreboard = this.hud.createScoreboard(this.participants);
         super.create();

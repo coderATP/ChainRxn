@@ -33,7 +33,7 @@ export class ChainRxn{
             for(let j = 0; j < 13; ++j){
                const card = this.scene.createCard("null", 0, 0)
                    .setOrigin(0)
-                   .setFrame(52)
+                   .setFrame(startFrame+j)
                    .setData({
                        frame: startFrame + j,
                        value: j+1,

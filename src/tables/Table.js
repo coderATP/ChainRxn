@@ -12,6 +12,7 @@ export class Table{
         this.config = scene.config;
         this.graphics = scene.graphics;
         this.participants = [];
+        this.opponents = [];
         //enemy random names
         this.enemyNames = ["Jerry", "Phil", "Dean", "Bush", "Meg", "Ann", "Tina"]
         this.enemyNames = scene.shuffle(this.enemyNames);
@@ -107,7 +108,7 @@ export class Table{
     setParticipantsCardsData(pile){
         pile.forEach((card, i)=>{
             card.setPosition(-i*0.5-this.cardWidth/2, -i*0.5-this.cardHeight/2)
-            .setFrame(52)
+            .setFrame(card.getData("frame"))
             .setInteractive({draggable: false})
             
             card.setData({

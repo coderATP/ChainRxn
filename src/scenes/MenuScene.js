@@ -9,6 +9,10 @@ export class MenuScene extends BaseScene{
     }
     
     showInterface(){
+        this.ui.gameplayButtons.forEach(btn=>{
+            eventEmitter.destroy("GAMEPLAY")
+        })
+        eventEmitter.destroy("GAMEPLAY");
         eventEmitter.destroy("TableSelectionToMenu")
         const { PreloadScene, PlayScene } = this.game.scene.keys; 
         eventEmitter.destroy("ConfirmToMenu"); 
