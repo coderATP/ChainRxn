@@ -69,6 +69,16 @@ export class ComputerMovement extends Movement{
         this.scene.commandHandler.playing = true;
         //A RECURSIVE FUNCTION: keeps calling itself
         this.lastIndexToDeal++; //player starts
+        if(this.lastIndexToDeal > this.tempParticipants.length-1){
+            //enable all gameplay buttons, it's player's turn
+            this.scene.ui.gameplayButtons.forEach(btn=>{
+                btn.style.backgroundColor = "#102030";
+                btn.disabled = false;
+            });
+            //add a one-time event listener to end button
+            this.scene.ui.endBtn.addEventListener("click", (e)=>{this.scene.endTurn();}, {once: true});
+            return;
+        }
         
         const marketPile = this.table.marketPile;
         const foundationPile = this.table.foundationPile;
@@ -122,22 +132,41 @@ export class ComputerMovement extends Movement{
                     const randomInvalidContainer = this.invalidContainersToDealFrom[Math.floor(Math.random()*this.invalidCardsToDealFrom.length)];
                     if(!this.movingToFoundation) return;
                     //swap
-                    const command = new PlayerToMarketMovement(this.scene, randomInvalidContainer);
-                    this.scene.commandHandler.execute(command);
-                    const otherCommand = new MarketToPlayerMovement(this.scene, randomInvalidContainer);
-                    this.scene.commandHandler.execute(otherCommand);
+                    let command, otherCommand;
+                    //if there's a viable container to swap from, swap
+                    if(randomInvalidContainer){
+                        this.scene.textDisplayTimer = 0;
+                        this.scene.ui.gameplayText.innerText = (sourcePile.id + " is swapping...");  
+                        command = new PlayerToMarketMovement(this.scene, randomInvalidContainer);
+                        this.scene.commandHandler.execute(command);
+                        otherCommand = new MarketToPlayerMovement(this.scene, randomInvalidContainer);
+                        this.scene.commandHandler.execute(otherCommand);
+                    }
+                    else{
+                        this.scene.textDisplayTimer = 0;
+                        this.scene.ui.gameplayText.innerText = (sourcePile.id + " opts not to swap"); 
+                    }
                     //deal afterwards
                     setTimeout(()=>{
                         this.addDataToContainers(containers);
                         const randomValidContainer = this.validContainersToDealFrom[Math.floor(Math.random()*this.validCardsToDealFrom.length)];
                         if(!randomValidContainer){
-                            alert(sourcePile.id + " has no valid card, to next participant");
+                            this.scene.textDisplayTimer = 0;
+                            this.scene.ui.gameplayText.innerText = (sourcePile.id + " has no valid card to deal"); 
                             return;
                         }
+                        this.scene.textDisplayTimer = 0;
+                        this.scene.ui.gameplayText.innerText = (sourcePile.id + " is dealing..."); 
                         const command = new PlayerToFoundationMovement(this.scene, randomValidContainer);
                         this.scene.commandHandler.execute(command);
+                        this.movingToFoundation = false;
                     }, 1100);
-                    this.movingToFoundation = false;
+                    
+                    //NEXT PARTICIPANT
+                    setTimeout(()=>{
+                       // if(this.lastIndexToDeal > this.tempParticipants.length-1) return;
+                        this.execute();
+                    }, 2200)
                 break;
                 }
             }

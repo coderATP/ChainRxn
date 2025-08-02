@@ -23,7 +23,7 @@ export class PlayerPile{
        this.zone.setData({index: containerIndex-1});
        this.zones.push(this.zone)
        this.container = this.scene.add.container(x, y).setSize(w,h)//.setInteractive();
-       this.container.setData({index: containerIndex-1});
+       this.container.setData({index: containerIndex-1, ownerID: this.id});
  
        this.containers.push(this.container);
 

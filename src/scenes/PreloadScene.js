@@ -18,6 +18,7 @@ export class PreloadScene extends BaseScene{
         this.text = "sounds";
         const audioFiles = [
           //  ['menuSong', "sounds/menu.mp3"],
+            ['errorSound', "sounds/error_sound.wav"],
             ['clockTickSound', "sounds/clock.ogg"], 
            // ['playSong', "sounds/new_game.ogg"],
             ['drawSound', "sounds/draw.wav"],

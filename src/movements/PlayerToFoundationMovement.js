@@ -1,4 +1,5 @@
 import { Movement } from "./Movement.js";
+import { eventEmitter } from "../events/EventEmitter.js";
 
 export class PlayerToFoundationMovement extends Movement{
     constructor(scene, playerContainer){
@@ -15,6 +16,8 @@ export class PlayerToFoundationMovement extends Movement{
         this.card = sourceContainer.list[sourceContainer.length-1];
         this.targetY = targetPile.y - sourceContainer.y;
         this.targetX = targetPile.x - sourceContainer.x;
+        //reveal chain and rotate towards dealer
+        this.scene.chainRxn.table.chain.rotateTowards(sourceContainer); 
        
         this.scene.tweens.add({
             targets: this.card,
@@ -37,11 +40,27 @@ export class PlayerToFoundationMovement extends Movement{
                 
                 targetPile.container.add(card);
                 targetPile.container.list.forEach((elem, i)=>{
-                    elem.setPosition(-i*2, -i*2);
+                    elem.setPosition(0, -i*2);
                     elem.setData({x: card.x, y: card.y})  
                 })
                 sourceContainer.list.shift();
                 this.card = null;
+                
+                //CHECK IF THERE IS A WINNER
+                let sourcePile;
+                this.table.participants.forEach((participant)=>{
+                    if(participant.id === sourceContainer.getData("ownerID")){
+                        sourcePile = participant;
+                        return;
+                    }
+                });
+                let emptyContainers = 0;
+                sourcePile.containers.forEach((container)=>{
+                    if(!container.length) emptyContainers++;
+                });
+                if (emptyContainers === 5){
+                    eventEmitter.emit("GameComplete");
+                }
             }
         })
     }

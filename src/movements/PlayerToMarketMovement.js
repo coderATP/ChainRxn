@@ -24,7 +24,7 @@ export class PlayerToMarketMovement extends Movement{
             onComplete: ()=>{
                 const card = this.scene.createCard(sourceContainer.id+"Card")
                     .setInteractive({draggable: false})
-                    .setFrame(52);
+                    .setFrame(this.card.getData("frame"));
                 card.setData({
                     x: card.x,
                     y: card.y,
@@ -34,8 +34,12 @@ export class PlayerToMarketMovement extends Movement{
                     colour: this.card.getData("colour"),
                     value: this.card.getData("value")
                 });
-                
                 targetPile.container.addAt(card, 0);
+                
+                targetPile.container.list.forEach((card, i)=>{
+                    card.setPosition(0, -i*0.5);
+                    card.setData({x: card.x, y: card.y});
+                })
                 sourceContainer.list.shift();
                 this.card = null;
             }

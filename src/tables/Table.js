@@ -131,7 +131,7 @@ export class Table{
     
     setMarketCardsData(pile){
         pile.forEach((card, i)=>{
-            card.setPosition(-i*0.5, -i*0.5)
+            card.setPosition(0, -i*0.5)
             .setName("marketCard")
             .setFrame(card.getData("frame"))
             .setInteractive({draggable: false})

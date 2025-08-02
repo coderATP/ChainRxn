@@ -205,23 +205,31 @@ export class PlayScene extends BaseScene{
                             const containers = this.chainRxn.table.playerPile.containers;
                             const container = containers[zoneIndex];
                             const playerCard = container.list[0];
-                            const foundationCard = this.chainRxn.table.foundationPile.container.list[0];
+                            const foundationContainer = this.chainRxn.table.foundationPile.container;
+                            const foundationCard = foundationContainer.list[foundationContainer.length-1];
                            
                             //execute deal to foundation
+                            //only if container isn't empty
+                            if(!playerCard){
+                                 // alert("P" + (zoneIndex+1)+" is not valid");
+                                  this.textDisplayTimer = 0;
+                                  this.ui.gameplayText.innerText = ("P" + (zoneIndex+1) +" is empty");
+                                  this.preloadScene.audio.play(this.preloadScene.audio.errorSound);
+                                  return;
+                            }  
                             //only if cards are 1</> each other
                             if(foundationCard.getData("value") !== playerCard.getData("value")+1 &&
                               foundationCard.getData("value") !== playerCard.getData("value")-1 ){
                                  // alert("P" + (zoneIndex+1)+" is not valid");
                                   this.textDisplayTimer = 0;
-                                  this.ui.gameplayText.innerText = ("P" + (zoneIndex+1)+" is not valid"); 
+                                  this.ui.gameplayText.innerText = ("P" + (zoneIndex+1) +"(" + playerCard.getData("value")+") is not valid");
+                                  this.preloadScene.audio.play(this.preloadScene.audio.errorSound);
                                   return;
                             }
-                            //reveal chain and rotate towards dealer
-                            this.chainRxn.table.chain.rotateTowards(container); 
                             const command = new PlayerToFoundationMovement(this, container);
                             this.commandHandler.execute(command); 
                             //gray out button, indicates dealing was successful
-                            this.onGameplayButtonPressed(event.target);        
+                           // this.onGameplayButtonPressed(event.target);        
                              
                             this.dealing = false; //can no longer deal 
                         break;
@@ -268,7 +276,12 @@ export class PlayScene extends BaseScene{
         if(!this.computerExecuting) return;
         const command = new ComputerMovement(this);
         this.commandHandler.execute(command);
-        this.computerExecuting = false; //stop executing 
+        this.computerExecuting = false; //stop executing
+        //disable all gameplay buttons, to indicate it's no more player's turn
+        this.ui.gameplayButtons.forEach(btn=>{
+            btn.style.backgroundColor = "gray";
+            btn.disabled = true;
+        })
     }
     undoMove(event){
         this.lastAction = "undo";
@@ -291,7 +304,7 @@ export class PlayScene extends BaseScene{
         //some multiple events, others one-time
         this.ui.gameplayButtons.forEach(btn=>{
             switch(btn.id){
-                case "swapBtn": btn.addEventListener("click", (e)=>{this.swapCard(e)}, {once: false});
+                case "swapBtn": btn.addEventListener("click", (e)=>{this.swapCard(e);}, {once: false});
                 break;
                 case "dealBtn": btn.addEventListener("click", (e)=>{this.dealCard(e)}, {once: false});
                 break;
