@@ -1,0 +1,200 @@
+section#playScreen{
+    background-color: #004400;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    display: none;
+}
+div#playScreenTop{
+    width: 95%;
+    height: 12%;
+    box-shadow: 5px 5px 5px black;
+    border-radius: 3px;
+    position: absolute;
+    top: 2%;
+    left: 50%;
+    transform: translate(-50%);
+    background-color: rgba(0, 255, 0, 0.3);
+    overflow: auto;
+    display: none;
+    justify-content: center;
+}
+
+div#playScreenTop div#marketSection{
+    position: absolute;
+    height: 100%;
+    width: 20%;
+    left: 0;
+}
+div#playScreenTop div#uiSection{
+    position: absolute;
+    height: 100%; 
+    width: 80%;
+    right: 0;
+}
+div#playScreenTop div#table {
+    width: 100%;
+    height: 55%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%);
+    padding: 0;
+}
+div#playScreenTop div#others{
+    display: flex;
+    justify-content: center;
+    font-family: myOtherFont;
+    position: absolute;
+    height: 45%;
+    width: 60%;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%);
+}
+div#playScreenTop div#others div{
+    width: 33.33%;
+    display: flex;
+    justify-content: center;
+}
+div#playScreenTop div#others img {
+    height: 70%;
+    position: absolute;
+    top: 0;
+}
+div#playScreenTop div#others p{
+    height: 30%;
+    position: absolute;
+    bottom: 0;
+    font-size: 0.75rem;
+    color: white;
+}
+div#playScreenTop table{
+    position: absolute;
+    width: 96%;
+    text-align: center;
+    margin: auto;
+    color: gold;
+    text-shadow: 1px 1px 1px green;
+    box-shadow: 3px 3px 3px black;
+    border-radius: 3px;
+    background-color: darkolivegreen;
+    left: 50%;
+    transform: translate(-50%);
+    font-size: 0.9rem;
+}
+
+div#playScreenTop p{
+    font-family: myOtherFont;
+}
+tr, th, td{
+    font-family: myOtherFont;
+}
+
+
+div#playScreenBottom{
+    width: 95%;
+    height: 12%;
+    box-shadow: 5px 5px 5px black;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 2%;
+    left: 50%;
+    transform: translate(-50%);
+    background-color: rgba(0, 255, 0, 0.3);
+    overflow: auto;
+    display: none;
+    justify-content: center;
+}
+
+div#playByPlayScreen{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 100%;
+    max-width: 100%;
+    max-height: 20%;
+    transform: translate(-50%, -50%);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-family: myOtherFont;
+}
+
+div#playByPlayScreen div#textWrapper{
+    width: 80%;
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+}
+div#playByPlayScreen p{
+    font-family: myOtherFont;
+    font-size: 1.1rem;
+}
+div#playScreenBottom div#gameplayButtons {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+div#playScreenBottom div#gameplayButtons button{
+    width: 18%;
+    margin: 5px;
+    box-shadow: 0px 5px 5px black; 
+    color: white;
+    font-family: myOtherFont;
+    font-size: 1.2rem;
+    background-color: #102030;
+}
+div#playScreenBottom div#gameplayButtons button#endBtn{
+  /*  position: absolute;
+    right: 0;*/
+}
+div#playScreenBottom div#gameplayButtons button:active{
+    background-color: red;
+}
+div#playScreenBottom div#uiSection{
+    /*border: 2px solid white; */
+    width: 100%;
+    height: 30%;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+}
+div#playScreenBottom div#commentarySection {
+    /*border: 2px solid white; */
+    width: 100%;
+    height: 70%;
+    position: absolute;
+    top: 0;
+}
+div#playScreenBottom div#uiSection div#screenshot {
+    /*border: 2px solid white; */
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    bottom: 0;
+}
+div#playScreenBottom div#uiSection div#screenshot a {
+  /*  border: 2px solid white; */
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    bottom: 35%;
+    text-align: center;
+    font-size: 2.0rem;
+}

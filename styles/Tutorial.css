@@ -1,0 +1,75 @@
+section#tutorialScreen{
+    position: absolute;
+    width: 95%;
+    height: 95%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 5%;
+    box-shadow: 5px 5px 50px brown;
+    transform: translate(-50%, -50%);
+    display: none;
+    background-color: rgba(21, 1, 90, 0.8);
+}
+section#tutorialScreen div#go-to{
+    bottom: 3%;
+    height: 10%;
+    width: 100%;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    line-height: 150%;
+}
+section#tutorialScreen div#message{
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%);
+    height: 90%;
+    width: 100%;
+    position: absolute;
+    text-align: justify;
+    line-height: 100%;
+    display: grid;
+    margin-top: 10px;
+    overflow: auto;
+}
+
+section#tutorialScreen div#message div{
+    width: 95%;
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+}
+
+section#tutorialScreen div#message h3{
+    font-family: myOtherFont;
+    font-size: 1.1rem;
+    text-align: center;
+    line-height: 300%;
+    color: gold;
+}
+section#tutorialScreen div#message img{
+    font-family: myOtherFont;
+    font-size: 0.8rem;
+    color: gold;
+    width: 100%;
+}
+section#tutorialScreen div#message p{
+    font-family: MyOtherOtherFont;
+    font-size: 1rem;
+    color: white;
+    text-align: justify;
+    line-height: 1.5rem;
+}
+section#tutorialScreen button{
+    height: 100%;
+    color: white;
+    margin: auto;
+    background: transparent;
+    box-shadow: 10px 10px 10px black;
+    position: absolute;
+    right: 5%;
+}
+section#tutorialScreen button:hover{
+    background-color: black;
+}

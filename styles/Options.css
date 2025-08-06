@@ -1,0 +1,60 @@
+/* OPTIONS SCREEN */
+section#optionsScreen{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: black;
+    width: 90%;
+    height: 20%;
+    border: 20px solid green;
+    box-shadow: 10px 10px 100px yellowgreen;
+    border-radius: 3%;
+    display: none;
+}
+
+section#optionsScreen div#go-to{
+    top: 0;
+    height: 20%;
+    width: 100%;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    line-height: 150%;
+} 
+section#optionsScreen div#sfx_div{
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%);
+    width: 95%;
+    height: 40%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+section#optionsScreen div#vol_div{
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%); 
+    width: 95%;
+    height: 40%;
+    display: flex;
+    justify-content: left;
+    align-items: center; 
+}
+
+p#sfx_p, p#vol_p{
+    font-size: 0.6rem;
+}
+section#optionsScreen input{
+    margin-left: 10px;
+    width: 100%;
+    color: gray;
+}
+
+section#optionsScreen div#go-to button{
+    background-color: #102030;
+    height: 100%;
+} 

@@ -1,0 +1,16 @@
+export const tutorial = {
+    section_1: "Welcome aboard! This is ChainRxn, a turn-based multiplayer game in which each player is dealt 5 random cards at the start of the game.\nThe round starts with the user, and continues clockwisely to other participants.\n\n\n\n",
+    section_2: "This is the top section, where we have the Market and Scoreboard. Tap the Clock icon to toggle (on/off) the stopwatch sound. The About section brings you here - to the tutorial menu.\n\n\n\n",
+    section_3: "This is the table, which accomodates 2 - 4 players. At the start of the game, each participant is dealt 5 cards. The remaining cards are kept in the market.\nThe game starts with you tapping the table. Commentaries (instructions) are also displayed on the table.\n\n\n\n",
+    section_4: "Here is the bottom section which contains the gameplay buttons (swap, deal, end, undo and redo).\n\n\n\n",
+    section_5: "The swap button is used to exchange an undesirable card with another one from the Market. This button can only be used once per turn.\n\n\n\n",
+    section_6: "The deal button is used to deal a valid card to the foundation. Multiple cards can be dealt per turn, as long as they are valid.\n\n\n\n",
+    section_7: "The undo button is used to undo the last action (which may be swap, deal or redo). This button works for as lomg as there's a previously executed action.\n\n\n\n",
+    section_8: "The redo button is used to redo a previously undone action. This button works for as long as:\n  (a) there is a previously undone action; and\n(b)    there is no new action registered after a previously undone action.\n\n\n\n",
+    section_9: "The end button is used to end a turn. This button signals the next participant that it's their turn. The end button can only be pressed once per turn, and the action cannot be undone. So, ensure you are indeed ready to end your turn before pressing it.\n\n\n\n",
+    section_10: "A card is valid to be dealt if its value is one (1) less or greater than the topmost card on the Foundation. e.g.\n  5 can be dealt on 6.\n    5 can also be dealt on 4.\nNOTE: A = 1, J = 11, Q = 12 and K = 13.\n\n\n\n",
+    section_11: "Scoring is calculated 'recursively' based on the number of valid hands dealt per turn, that is:\n    1 valid hand dealt = 1 point;\n    2 valid hands dealt = (1+2) = 3 points;\n    3 valid hands dealt = (1+2+3) = 6 points...\nBased on this calculation, the eventual winner can score a max of 15 points and a min of 5 points.\n\n\n\n",
+    section_12: "A participant is declared winner if all of their cards have been dealt.\n\n\n\n",
+    section_13: "There are three difficulty modes EASY, MEDIUM AND HARD.\n\n\n\n",
+    section_14: "We hope you enjoy playing the game. Have fun!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", 
+};
