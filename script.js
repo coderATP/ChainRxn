@@ -11,22 +11,13 @@ import { CreditsScene } from "./src/scenes/CreditsScene.js";
 import { TutorialScene} from "./src/scenes/TutorialScene.js";
 
 window.addEventListener("load", ()=>{
-
-    let GAME_WIDTH, GAME_HEIGHT, ASPECT_RATIO = innerWidth/innerHeight;
-    if(ASPECT_RATIO <= 1 ){
-        GAME_WIDTH = innerWidth*devicePixelRatio;
-        GAME_HEIGHT = innerHeight*devicePixelRatio;
-    }
-    else{
-        GAME_WIDTH = innerHeight/ ASPECT_RATIO;
-        GAME_HEIGHT = innerHeight;
-    }
+    const GAME_WIDTH = screen.width*devicePixelRatio;
+    const GAME_HEIGHT = screen.height*devicePixelRatio;
     const ZOOM_FACTOR = 1;
     
     const SHARED_CONFIG = {
         width: GAME_WIDTH, 
         height: GAME_HEIGHT,
-        aspectRatio: ASPECT_RATIO,
         zoomFactor: ZOOM_FACTOR,
         topLeft: {
             x: ( GAME_WIDTH - (GAME_WIDTH/ZOOM_FACTOR) ) / 2,
@@ -52,6 +43,7 @@ window.addEventListener("load", ()=>{
         scale: {
              mode: Phaser.Scale.Fit,
              autoCenter: Phaser.Scale.CENTER_BOTH,
+             orientation: Phaser.Scale.Orientation.PORTRAIT
         },
         pixelArt: false, 
         physics:{

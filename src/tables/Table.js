@@ -20,13 +20,7 @@ export class Table{
         this.cardWidth = this.scene.chainRxn.deck[0].displayWidth;
         this.cardHeight = this.scene.chainRxn.deck[0].displayHeight;
         
-        if(this.config.aspectRatio <=1){
-            this.width = this.height = (this.config.width)*0.95; 
-        }
-        else{
-            this.height = innerHeight*0.60;
-            this.width = this.height;
-        }
+        this.width = this.height = (this.config.width)*0.95;  
         
         this.marginX = (this.config.width - this.width)*0.5;
         this.marginY = (this.config.height - this.height)/2;

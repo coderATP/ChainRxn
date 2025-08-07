@@ -82,10 +82,36 @@ export class PreloadScene extends BaseScene{
             this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
 
             this.loadingText2.destroy();
-            this.input.once("pointerdown", ()=>{ this.scene.start("MenuScene"); });
+            this.input.once("pointerdown", ()=>{
+                //request fullscreen
+                this.toggleFullscreen();
+                setTimeout(()=>{this.scene.start("MenuScene")},500)
+                
+            });
         })
         this.loadFiles(); 
-
+    }
+    
+    toggleFullscreen(){
+        if(!document.fullscreenElement){
+            //full screen
+            document.documentElement.requestFullscreen();
+            //portrait mode only
+            if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('portrait').catch((error) => {
+                        console.warn('Failed to lock screen orientation:', error);
+                    });
+                   // this.onResize();
+                }
+        }else if(document.exitFullscreen){
+            document.exitFullscreen();
+        }
+    } 
+    onResize(){
+        window.addEventListener("resize", ()=>{
+            this.config.width = screen.availWidth * devicePixelRatio;
+            this.config.height = screen.availHeight * devicePixelRatio; 
+        })
     }
     create(){
         this.audio = new AudioControl(this);

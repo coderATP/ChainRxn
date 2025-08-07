@@ -104,7 +104,7 @@ div#playScreenBottom{
     position: absolute;
     bottom: 2%;
     left: 50%;
-    transform: translate(-50%);
+    transform: translate(-50%, -2%);
     background-color: rgba(0, 255, 0, 0.3);
     overflow: auto;
     display: none;
