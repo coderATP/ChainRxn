@@ -82,6 +82,7 @@ export class PreloadScene extends BaseScene{
             this.loadingText.setPosition(this.config.width/2 - this.loadingText.width/2, this.config.height/2 - this.loadingText.height/2);
 
             this.loadingText2.destroy();
+            this.loadingText2 = null;
             this.input.once("pointerdown", ()=>{
                 //request fullscreen
                 this.toggleFullscreen();
